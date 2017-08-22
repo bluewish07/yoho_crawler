@@ -5,8 +5,9 @@ import requests
 import smtplib
 # Import the email modules we'll need
 from email.mime.text import MIMEText
+import time
 
-g_cookie = "twxvyup1uparxvlir405jtd5"
+g_cookie = "jwhvh3yzajsmnccbw5bacl3l"
 g_account = 'kevenbot3@gmail.com'
 g_pw = '4%x4fI927vdw'
 
@@ -39,20 +40,19 @@ def sendEmail(urls):
 	except:  
 		print 'Something went wrong...'
 
-
-def main():
+def crawl():
 	headers = {'Cookie': 'ASP.NET_SessionId='+g_cookie+'; CookieLocaleName=en-CA; testcookie=cookie'}
 	urls_to_send = []
-	for i in range(0, 4):
-		url = 'https://reservation.pc.gc.ca/view.ashx?view=grid&async=true&nav='+str(i)+'0&order=prev'
+	health_check = True
+	for i in range(3):
+		url = 'https://reservation.pc.gc.ca/view.ashx?view=grid&async=true&nav='+str(i)+'&order=prev'
 		raw_response = requests.get(url, headers=headers)
-		# print raw_response.text
 		occurence_forward = raw_response.text.find('https://reservation.pc.gc.ca/Images/available_icon20x20.png')
 		occurence_reverse = raw_response.text.rfind('https://reservation.pc.gc.ca/Images/available_icon20x20.png')
 		found_availability = occurence_forward != occurence_reverse
 
 		found_unavailability = raw_response.text.find('https://reservation.pc.gc.ca/Images/unavailable_icon20x20.png')
-		found_unavailability_r = raw_response.text.find('https://reservation.pc.gc.ca/Images/unavailable_icon20x20.png')
+		found_unavailability_r = raw_response.text.rfind('https://reservation.pc.gc.ca/Images/unavailable_icon20x20.png')
 		health_check = found_unavailability != found_unavailability_r
 
 		if found_availability == True:
@@ -61,10 +61,27 @@ def main():
 		else:
 			print "Meh"
 
+		if health_check == False:
+			print url
+			print raw_response.text
+			break
+
 	if len(urls_to_send):
 		sendEmail(urls_to_send)
 	elif health_check == False:
 		sendEmail(None)
 
+	return health_check
+
+
+def main():
+	while 1:
+		success = crawl()
+		if success == False:
+			break
+		time.sleep(300) # sleep 5 minutes
+
+
+	
 
 if __name__ == "__main__": main()
