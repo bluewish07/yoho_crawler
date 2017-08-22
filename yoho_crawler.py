@@ -6,6 +6,7 @@ import smtplib
 # Import the email modules we'll need
 from email.mime.text import MIMEText
 import time
+import datetime
 
 g_cookie = "jwhvh3yzajsmnccbw5bacl3l"
 g_account = 'kevenbot3@gmail.com'
@@ -76,7 +77,7 @@ def crawl():
 
 def main():
 	while 1:
-		print time.time()
+		print datetime.datetime.now()
 		success = crawl()
 		if success == False:
 			break
