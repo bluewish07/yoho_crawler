@@ -13,7 +13,7 @@ g_pw = '4%x4fI927vdw'
 def sendEmail(urls):
 	content = ''
 	subject = ''
-	if len(urls):
+	if urls is not None:
 		for url in urls:
 			content += url + '\n'
 		subject = 'Am I going to Yoho?'
