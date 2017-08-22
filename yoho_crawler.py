@@ -76,6 +76,7 @@ def crawl():
 
 def main():
 	while 1:
+		print time.time()
 		success = crawl()
 		if success == False:
 			break
